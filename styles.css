@@ -1,0 +1,23 @@
+.kanban-board { display: flex;
+   gap: 20px; 
+   padding: 20px; }
+.kanban-column { flex: 1; padding: 10px; 
+  background: #f8f9fa; 
+  border-radius: 5px; 
+  min-height: 300px; }
+.task { padding: 10px; 
+  background: white; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  margin-bottom: 10px; 
+  cursor: grab; 
+  position: relative; 
+  transition: transform 0.2s ease-in-out; }
+.task:hover { transform: scale(1.05); }
+.delete-btn { position: absolute; 
+  top: 5px; right: 5px; 
+  background: red; 
+  color: white; 
+  border: none; 
+  padding: 2px 5px; 
+  cursor: pointer; }

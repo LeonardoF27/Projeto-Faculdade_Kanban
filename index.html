@@ -21,24 +21,27 @@
             <div id="todo" class="kanban-column" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h4>Para Fazer</h4>
             </div>
+
             <!-- Em Progresso -->
             <div id="inProgress" class="kanban-column" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h4>Em Progresso</h4>
             </div>
-            <!-- Concluido -->
-            <div class="kanban-column" ondrop="drop(event)" ondragover="allowDrop(event)">
+
+            <!-- Concluído -->
+            <div id="done" class="kanban-column" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h4>Concluído</h4>
             </div>
+
 
         </div>
 
         <!-- Sessão de adicionar Atividades -->
         <div class="mt-3">
-            <!-- Input de Nome da Tarefa -->
-            <input type="text" id="taskNome" class="form-control" placeholder="Nome da Tarefa">
-
             <!-- Input de Responsável -->
-            <input type="text" id="taskOwner" class="form-control mt-2" placeholder="Responsável">
+            <input type="text" id="taskNome" class="form-control" placeholder="Responsável">
+
+            <!-- Input de Tarefa -->
+            <input type="text" id="taskOwner" class="form-control mt-2" placeholder="Tarefa">
               
             <!-- Input de Prazo -->
             <input type="date" id="taskDeadline" class="form-control mt-2">

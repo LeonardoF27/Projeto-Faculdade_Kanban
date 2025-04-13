@@ -77,6 +77,7 @@ function deleteTask(id) {
     }
 }
 
+// Funcionamento dos botões para as proximos status
 function markAsCompleted(id) {
     const task = document.getElementById(id); // Pega a tarefa
     const todoColumn = document.getElementById("todo");
@@ -103,6 +104,7 @@ function markAsCompleted(id) {
     saveTasks();  // Salva o estado atual
 }
 
+// Em progresso funcionamento do botão concluido
 function addTask() {
     let taskInput = document.getElementById("taskNome");
     let taskOwner = document.getElementById("taskOwner");

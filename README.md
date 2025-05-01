@@ -23,12 +23,12 @@ As tarefas podem ser editadas ou excluídas (caso esteja implementado).
 O estado das tarefas é armazenado no banco de dados.
 
 # 👥 Autores
-Leonardo Ebert Cueto Ferreira
-José Edcarlos Miranda da Silva Junior
-Amanda Rodrigues de Sena
-Miguel Felipe de Jesus Vieira
-Thalia Sousa da Silva
-Alanis Victoria Alves Vieira
-Davi Germano Martins Ramos
-Filipi Amaury Souza Carbonelli
-Pedro Henrique Santos Oliveira
+Leonardo Ebert Cueto Ferreira<br>
+José Edcarlos Miranda da Silva Junior<br>
+Amanda Rodrigues de Sena<br>
+Miguel Felipe de Jesus Vieira<br>
+Thalia Sousa da Silva<br>
+Alanis Victoria Alves Vieira<br>
+Davi Germano Martins Ramos<br>
+Filipi Amaury Souza Carbonelli<br>
+Pedro Henrique Santos Oliveira<br>

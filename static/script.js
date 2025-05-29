@@ -52,12 +52,12 @@ function addTask() {
         task.ondragstart = drag;
         task.id = taskId;
         task.innerHTML = `<strong>${taskInput.value}</strong><br>
-                          <small>Tarefa: ${taskOwner.value || 'Não definido'}</small><br>
+                          <small>Responsável: ${taskOwner.value || 'Não definido'}</small><br>
                           <small>Prazo: ${taskDeadline.value || 'Sem prazo'}</small><br>
                           <div class="task-buttons">
                               <button class='edit-btn btn btn-warning btn-sm' onclick='editTask("${taskId}")'>Editar</button>
                               <button class='delete-btn btn btn-danger btn-sm' onclick='deleteTask("${taskId}")'>Apagar</button>
-                              <button  id='done' class='complete-btn btn btn-success btn-sm' onclick='markAsCompleted("${taskId}")'>Concluído</button>
+                              <button class='complete-btn btn btn-success btn-sm' onclick='markAsCompleted("${taskId}")'>Concluído</button>
                           </div>`;
 
         document.getElementById("todo").appendChild(task);
@@ -77,59 +77,16 @@ function deleteTask(id) {
     }
 }
 
-// Funcionamento dos botões para as proximos status
+// Marca a tarefa como concluída (riscando o texto e desabilitando o botão)
 function markAsCompleted(id) {
-    const task = document.getElementById(id); // Pega a tarefa
-    const todoColumn = document.getElementById("todo");
-    const inProgressColumn = document.getElementById("inProgress");
-    const doneColumn = document.getElementById("done");
-
-    if (!task || !todoColumn || !inProgressColumn || !doneColumn) return;
-
-    // Se a tarefa está na coluna "Para Fazer"
-    if (task.closest(".kanban-column").id === "todo") {
-        inProgressColumn.appendChild(task);  // Mover para "Em Progresso"
-    }
-    // Se a tarefa está na coluna "Em Progresso"
-    else if (task.closest(".kanban-column").id === "inProgress") {
-        doneColumn.appendChild(task);  // Mover para "Concluído"
-        task.style.textDecoration = "line-through";  // Risca a tarefa
-        const completeBtn = task.querySelector(".complete-btn");
-        if (completeBtn) {
-            completeBtn.disabled = true;  // Desabilita o botão "Concluído"
-            completeBtn.innerText = "Concluída";  // Altera o texto do botão
+    let task = document.getElementById(id);
+    if (task) {
+        task.style.textDecoration = "line-through";
+        let completeButton = task.querySelector(".complete-btn");
+        if (completeButton) {
+            completeButton.disabled = true;
+            completeButton.innerText = "Concluída";
         }
-    }
-
-    saveTasks();  // Salva o estado atual
-}
-
-// Em progresso funcionamento do botão concluido
-function addTask() {
-    let taskInput = document.getElementById("taskNome");
-    let taskOwner = document.getElementById("taskOwner");
-    let taskDeadline = document.getElementById("taskDeadline");
-
-    if (taskInput.value.trim() !== "") {
-        let taskId = "task" + new Date().getTime();
-        let task = document.createElement("div");
-        task.className = "task";
-        task.draggable = true;
-        task.ondragstart = drag;
-        task.id = taskId;
-        task.innerHTML = `<strong>${taskInput.value}</strong><br>
-                          <small>Tarefa: ${taskOwner.value || 'Não definido'}</small><br>
-                          <small>Prazo: ${taskDeadline.value || 'Sem prazo'}</small><br>
-                          <div class="task-buttons">
-                              <button class='edit-btn btn btn-warning btn-sm' onclick='editTask("${taskId}")'>Editar</button>
-                              <button class='delete-btn btn btn-danger btn-sm' onclick='deleteTask("${taskId}")'>Apagar</button>
-                              <button class='complete-btn btn btn-success btn-sm' onclick='markAsCompleted("${taskId}")'>Concluído</button>
-                          </div>`;
-
-        document.getElementById("todo").appendChild(task);
-        taskInput.value = "";
-        taskOwner.value = "";
-        taskDeadline.value = "";
         saveTasks();
     }
 }

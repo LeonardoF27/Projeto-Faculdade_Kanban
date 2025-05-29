@@ -22,5 +22,80 @@
  padding: 2px 5px; 
  cursor: pointer; }
  .kanban-board { display: flex; gap: 20px; padding: 20px; }
- .kanban-column { flex: 1; padding: 10px; background: #f8f9fa; border-radius: 5px; min-height: 300px; }
+ .kanban-column { flex: 1; padding: 10px; background: #d3d3d3; border-radius: 5px; min-height: 300px; }
  .task { padding: 10px; background: white; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; cursor: grab; }
+
+ .containerResgisterLongin {
+  height: 70vh;
+  width: 90vh;
+  background-color: #4a90e2;
+  border-radius: 20px;
+  border: 2px blue;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+ }
+
+ .formRegisterLogin {
+  display: flex;
+  flex-direction: column;
+  width: 70vh;
+  align-items: center;
+ }
+
+ .formRegisterLogin input {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 16px;
+  transition: 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+ }
+
+ .formRegisterLogin button {
+  margin-top: 10px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #2c2c2c;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+ }
+
+ .register-link a {
+  text-decoration: none;
+  color: white;
+ }
+
+ .register-link a:hover {
+  color: #2c2c2c;
+ }
+
+ .formRegisterLogin button:hover {
+  background-color: #1f1f1f;  /* Tom mais escuro */
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+ }
+
+ body {
+  background-color: #f8f9fa;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 49px, #e0e0e0 50px),
+    repeating-linear-gradient(90deg, transparent, transparent 49px, #e0e0e0 50px);
+  font-family: sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+}

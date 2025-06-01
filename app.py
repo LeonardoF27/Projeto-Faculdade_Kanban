@@ -1,4 +1,5 @@
 from functools import wraps
+import json
 from flask import Flask, flash, render_template, request, redirect, session, jsonify, url_for
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,11 +21,11 @@ def init_db():
         ''')
         db_cursor.execute('''
         CREATE TABLE IF NOT EXISTS Tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
                 owner TEXT,
                 deadline TEXT,
-                status TEXT,
+                task_column TEXT,
                 user_id INTEGER,
                 FOREIGN KEY (user_id) REFERENCES user_login(id)
             )
@@ -101,16 +102,80 @@ def kanban():
         return redirect(url_for('register'))
     return render_template('kanban.html')
 
-@app.route('/kanban/tarefas', methods=['POST'])
-@login_required
-def create_tasks():
-    data = request.json
-    db = sqlite3.connect("database.db")
-    d = db.cursor()
-    d.execute()
+@app.route('/kanban/save', methods=['POST'])
+def save_tasks():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Não autenticado'}), 401
+
+    user_id = int(session['user_id'])
+    tasks_data = request.get_json()
+
+    with sqlite3.connect('database.db') as db:
+        cursor = db.cursor()
+
+        cursor.execute('DELETE FROM Tasks WHERE user_id = ?', (user_id,))
+
+        for column, tasks in tasks_data.items():
+            for task in tasks:
+                cursor.execute(' INSERT INTO Tasks ( name, owner, deadline, task_column, user_id) VALUES ( ?, ?, ?, ?, ?)', (task['name'], task['owner'], task['deadline'], column, int(user_id)))
+
+        db.commit()
+
+    return jsonify({'success': True})
+
+@app.route('/kanban/load', methods=['GET'])
+def load_tasks():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Não autenticado'}), 401
+    
+    user_id = session['user_id']
+    with sqlite3.connect('database.db') as db:
+
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM Tasks WHERE task_column IS NULL OR task_column = ''")
+
+        cursor.execute("SELECT id, name, owner, deadline, task_column FROM tasks WHERE user_id = ?", (user_id,))
+        rows = cursor.fetchall()
 
 
+        tasks = {
+        "todo": [],
+        "inProgress": [],
+        "done": [],
+        }
 
+        for row in rows:
+            task_id, name, owner, deadline, column = row
+            tasks[column].append({
+            "id": task_id,
+            "name": name,
+            "owner": owner,
+            "deadline": deadline
+                })
+
+    return jsonify(tasks)
+
+# rota para atualizar o status da tarefa
+@app.route('/kanban/update-task-status', methods=['POST'])
+def update_task_column():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Não autenticado'}), 401
+
+    data = request.get_json()
+    task_id = data.get('id')
+    new_column = data.get('column')
+
+    with sqlite3.connect('database.db') as db:
+        cursor = db.cursor()
+        cursor.execute('''
+        UPDATE Tasks SET task_column = ? WHERE id = ? AND user_id = ?
+        ''', (new_column, task_id, session['user_id']))
+        db.commit()
+    
+
+    return jsonify({'success': True})
+
+    
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)

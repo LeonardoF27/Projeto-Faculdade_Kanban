@@ -15,9 +15,11 @@ function drop(event) {
     event.preventDefault();
     let taskId = event.dataTransfer.getData("text");
     let task = document.getElementById(taskId);
-    if (task && event.target.classList.contains("kanban-column")) {
-        event.target.appendChild(task);
-        saveTasks();
+    let targetColumn = event.target.closest(".kanban-column");
+
+    if (task && targetColumn) {
+        targetColumn.appendChild(task);
+        updateTaskStatusBackend(taskId, targetColumn.id);
     }
 }
 
@@ -106,35 +108,70 @@ function saveTasks() {
             });
         });
     });
-    localStorage.setItem("kanbanTasks", JSON.stringify(tasks));
+
+    fetch("/kanban/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(tasks)
+    }).then(response => {
+        if (!response.ok) {
+            console.error("Erro ao salvar tarefas.");
+        }
+    });
 }
 
 // Carrega as tarefas salvas no LocalStorage ao recarregar a página
 function loadTasks() {
-    let tasks = JSON.parse(localStorage.getItem("kanbanTasks")) || {};
-    Object.keys(tasks).forEach(columnId => {
-        let column = document.getElementById(columnId);
-        if (column) {
-            tasks[columnId].forEach(taskData => {
-                if (!document.getElementById(taskData.id)) { // Evita duplicatas
-                    let task = document.createElement("div");
-                    task.className = "task";
-                    task.draggable = true;
-                    task.ondragstart = drag;
-                    task.id = taskData.id;
-                    task.innerHTML = `<strong>${taskData.name}</strong><br>
-                                      <small>Responsável: ${taskData.owner}</small><br>
-                                      <small>Prazo: ${taskData.deadline}</small><br>
-                                      <div class="task-buttons">
-                                          <button class='edit-btn btn btn-warning btn-sm' onclick='editTask("${task.id}")'>Editar</button>
-                                          <button class='delete-btn btn btn-danger btn-sm' onclick='deleteTask("${task.id}")'>Apagar</button>
-                                          <button class='complete-btn btn btn-success btn-sm' onclick='markAsCompleted("${task.id}")'>Concluído</button>
-                                      </div>`;
-                    column.appendChild(task);
+    fetch("/kanban/load")
+        .then(response => response.json())
+        .then(tasks => {
+            Object.keys(tasks).forEach(columnId => {
+                let column = document.getElementById(columnId);
+                if (column) {
+                    tasks[columnId].forEach(taskData => {
+                        if (!document.getElementById(taskData.id)) {
+                            let task = document.createElement("div");
+                            task.className = "task";
+                            task.draggable = true;
+                            task.ondragstart = drag;
+                            task.id = taskData.id;
+                            task.innerHTML = `<strong>${taskData.name}</strong><br>
+                                <small>Responsável: ${taskData.owner}</small><br>
+                                <small>Prazo: ${taskData.deadline}</small><br>
+                                <div class="task-buttons">
+                                    <button class='edit-btn btn btn-warning btn-sm' onclick='editTask("${task.id}")'>Editar</button>
+                                    <button class='delete-btn btn btn-danger btn-sm' onclick='deleteTask("${task.id}")'>Apagar</button>
+                                    <button class='complete-btn btn btn-success btn-sm' onclick='markAsCompleted("${task.id}")'>Concluído</button>
+                                </div>`;
+                            column.appendChild(task);
+                        }
+                    });
                 }
             });
+        })
+        .catch(error => console.error("Erro ao carregar tarefas:", error));
+}
+
+function updateTaskStatusBackend(taskId, newColumn) {
+    fetch('/kanban/update-task-status', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: taskId,
+            column: newColumn
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            alert("Erro ao atualizar status da tarefa.");
         }
-    });
+    })
+    .catch(error => console.error('Erro:', error));
 }
 
 // Aguarda o carregamento do DOM para carregar as tarefas
